@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZF Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --dark-bg: #1e293b;
+            --darker-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --border-color: #334155;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --discord-color: #5865f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 1) 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4a6cf7, #8a63d2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+        }
+
+        .task-description {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .task-card {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .task-card h3 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #e2e8f0;
+        }
+
+        .task-card h3 i {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            margin: 8px 0;
+            width: 100%;
+            position: relative;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #3a5be0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(74, 108, 247, 0.4);
+        }
+
+        .btn-discord {
+            background: var(--discord-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(88, 101, 242, 0.3);
+        }
+
+        .btn-discord:hover {
+            background: #4752c4;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(88, 101, 242, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .btn-timer {
+            position: absolute;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+        }
+
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .status-icon.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 10px rgba(74, 108, 247, 0.5);
+        }
+
+        .status-icon.completed {
+            background: var(--success-color);
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: var(--success-color);
+            color: white;
+            box-shadow: var(--shadow);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .redirect-notice {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .redirect-notice i {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .status-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-code"></i> ZF Hub</h1>
+            <p>Complete tasks to access script resources</p>
+        </header>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-tasks"></i> Verification Tasks</h2>
+            <p class="task-description">
+                Please complete both tasks to verify your identity and access the script.
+            </p>
+            
+            <div class="task-grid">
+                <div class="task-card">
+                    <h3><i class="fab fa-youtube"></i> Watch Video</h3>
+                    <p>Watch the full video</p>
+                    <a id="watchBtn" href="https://youtu.be/eIIDKpi51Ek?si=sirBOMIvUI9GmdnN" target="_blank" class="btn btn-primary">
+                        <i class="fab fa-youtube"></i> Watch Video 
+                        <span id="videoBtnTimer" class="btn-timer">1:41</span>
+                    </a>
+                </div>
+                
+                <div class="task-card">
+                    <h3><i class="fab fa-discord"></i> Join Discord</h3>
+                    <p>Join our Discord server</p>
+                    <a id="discordBtn" href="https://discord.com/invite/FXDhyZzEdv" target="_blank" class="btn btn-discord">
+                        <i class="fab fa-discord"></i> Join Discord 
+                        <span id="discordBtnTimer" class="btn-timer">0:45</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="status-container">
+                <div class="status-item">
+                    <div class="status-icon active">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="status-text">Task Started</div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon" id="videoStatusIcon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="status-text">Watch Video</div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon" id="discordStatusIcon">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div class="status-text">Join Discord</div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon" id="scriptStatusIcon">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <div class="status-text">Get Script</div>
+                </div>
+            </div>
+            
+            <button id="getScriptBtn" class="btn btn-secondary" disabled>
+                <i class="fas fa-download"></i> Get Script
+            </button>
+            
+            <div class="redirect-notice">
+                <i class="fas fa-info-circle"></i> After completing tasks, you will be redirected to the script page
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© ZF Hub | Protecting Your Access</p>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Redirecting to script page...</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const watchBtn = document.getElementById('watchBtn');
+            const discordBtn = document.getElementById('discordBtn');
+            const getScriptBtn = document.getElementById('getScriptBtn');
+            const videoBtnTimer = document.getElementById('videoBtnTimer');
+            const discordBtnTimer = document.getElementById('discordBtnTimer');
+            const notification = document.getElementById('notification');
+            const videoStatusIcon = document.getElementById('videoStatusIcon');
+            const discordStatusIcon = document.getElementById('discordStatusIcon');
+            const scriptStatusIcon = document.getElementById('scriptStatusIcon');
+            
+            let videoCountdown;
+            let discordCountdown;
+            let videoSecondsLeft = 101; // 1 minute 41 seconds = 101 seconds
+            let discordSecondsLeft = 45; // 45 seconds
+            let videoTimerStarted = false;
+            let discordTimerStarted = false;
+            
+            // Format time display
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+            }
+            
+            // Update timer display
+            function updateTimer(timerElement, secondsLeft) {
+                timerElement.textContent = formatTime(secondsLeft);
+            }
+            
+            // Start the video timer
+            function startVideoTimer() {
+                if (videoTimerStarted) return;
+                
+                videoTimerStarted = true;
+                videoSecondsLeft = 101;
+                updateTimer(videoBtnTimer, videoSecondsLeft);
+                
+                videoCountdown = setInterval(function() {
+                    videoSecondsLeft--;
+                    updateTimer(videoBtnTimer, videoSecondsLeft);
+                    
+                    if (videoSecondsLeft <= 0) {
+                        clearInterval(videoCountdown);
+                        videoStatusIcon.classList.remove('active');
+                        videoStatusIcon.classList.add('completed');
+                        checkTasksCompletion();
+                    }
+                }, 1000);
+            }
+            
+            // Start the discord timer
+            function startDiscordTimer() {
+                if (discordTimerStarted) return;
+                
+                discordTimerStarted = true;
+                discordSecondsLeft = 45;
+                updateTimer(discordBtnTimer, discordSecondsLeft);
+                
+                discordCountdown = setInterval(function() {
+                    discordSecondsLeft--;
+                    updateTimer(discordBtnTimer, discordSecondsLeft);
+                    
+                    if (discordSecondsLeft <= 0) {
+                        clearInterval(discordCountdown);
+                        discordStatusIcon.classList.remove('active');
+                        discordStatusIcon.classList.add('completed');
+                        checkTasksCompletion();
+                    }
+                }, 1000);
+            }
+            
+            // Check if both tasks are completed
+            function checkTasksCompletion() {
+                if (videoSecondsLeft <= 0 && discordSecondsLeft <= 0) {
+                    getScriptBtn.disabled = false;
+                    getScriptBtn.classList.remove('btn-secondary');
+                    getScriptBtn.classList.add('btn-primary');
+                    scriptStatusIcon.classList.add('completed');
+                }
+            }
+            
+            // Video button click event - start timer
+            watchBtn.addEventListener('click', function() {
+                startVideoTimer();
+                videoStatusIcon.classList.add('active');
+            });
+            
+            // Discord button click event - start timer
+            discordBtn.addEventListener('click', function() {
+                startDiscordTimer();
+                discordStatusIcon.classList.add('active');
+            });
+            
+            // Get script button click event - redirect to the script page
+            getScriptBtn.addEventListener('click', function() {
+                // Show notification
+                notification.classList.add('show');
+                
+                // Redirect after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'https://zhoufuz.github.io/ZF-hub/LanguageChose.Html';
+                }, 1500);
+            });
+            
+            // Initialize timer displays
+            updateTimer(videoBtnTimer, videoSecondsLeft);
+            updateTimer(discordBtnTimer, discordSecondsLeft);
+        });
+    </script>
+</body>
+</html>
