@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --dark-bg: #1e293b;
+            --darker-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --text-light: #f1f5f9;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4a6cf7, #8a63d2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .verification-container {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .instructions {
+            margin-bottom: 25px;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .slider-container {
+            position: relative;
+            height: 60px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .slider-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .slider-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-weight: 500;
+            color: #94a3b8;
+            z-index: 1;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+
+        .slider-handle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            left: 0;
+            top: 0;
+            cursor: grab;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(74, 108, 247, 0.4);
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .slider-handle i {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .slider-progress {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(74, 108, 247, 0.3), rgba(74, 108, 247, 0.6));
+            width: 0;
+            border-radius: 30px 0 0 30px;
+            transition: width 0.1s;
+        }
+
+        .status-message {
+            text-align: center;
+            min-height: 24px;
+            margin: 15px 0;
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: all 0.3s;
+            height: 24px;
+        }
+
+        .status-message.error {
+            color: var(--error-color);
+        }
+
+        .status-message.success {
+            color: var(--success-color);
+        }
+
+        .status-message.warning {
+            color: var(--warning-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding: 20px 0;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 300px;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background: #3a5af5;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background: #6c757d;
+        }
+
+        .security-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+        }
+
+        .security-item i {
+            color: var(--success-color);
+            font-size: 1.2rem;
+        }
+
+        .loading-bar {
+            height: 4px;
+            background: var(--primary-color);
+            width: 0;
+            border-radius: 2px;
+            margin: 15px auto;
+            max-width: 300px;
+            transition: width 0.3s;
+        }
+
+        .robot-detected {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 41, 59, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            padding: 30px;
+            text-align: center;
+            border-radius: 16px;
+        }
+
+        .robot-detected.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .robot-detected i {
+            font-size: 4rem;
+            color: var(--error-color);
+            margin-bottom: 20px;
+        }
+
+        .robot-detected h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--error-color);
+        }
+
+        .robot-detected p {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .robot-detected .btn {
+            background: var(--error-color);
+        }
+
+        .robot-detected .btn:hover {
+            background: #c82333;
+        }
+
+        .human-pattern {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(74, 108, 247, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .pattern-2 {
+            top: auto;
+            left: auto;
+            bottom: -150px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+        }
+
+        .verification-hints {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-align: left;
+        }
+
+        .verification-hints h4 {
+            margin-bottom: 10px;
+            color: var(--warning-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verification-hints ul {
+            padding-left: 20px;
+        }
+
+        .verification-hints li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .card-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 20px 15px;
+            }
+            
+            .slider-container {
+                height: 50px;
+            }
+            
+            .slider-handle {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="human-pattern"></div>
+    <div class="human-pattern pattern-2"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shield-alt"></i> Human Verification</h1>
+            <p>Please complete the slider verification to continue</p>
+        </header>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-user-check"></i> Human Verification</h2>
+            </div>
+            
+            <div class="verification-container">
+                <p class="instructions">Hold and drag the slider to the far right to complete verification</p>
+                
+                <div class="slider-container">
+                    <div class="slider-track">
+                        <div class="slider-text">Drag the slider to complete verification</div>
+                        <div class="slider-progress" id="sliderProgress"></div>
+                        <div class="slider-handle" id="sliderHandle">
+                            <i class="fas fa-arrows-alt-h"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="status-message" id="statusMessage">Hold and drag the slider</p>
+                
+                <div class="loading-bar" id="loadingBar"></div>
+                
+                <button class="btn" id="redirectBtn" disabled>
+                    <i class="fas fa-lock"></i> Awaiting Verification...
+                </button>
+                
+                <div class="verification-hints">
+                    <h4><i class="fas fa-lightbulb"></i> Verification Tips:</h4>
+                    <ul>
+                        <li>Drag the slider at a natural speed, not too fast or too slow</li>
+                        <li>Brief pauses during the operation are acceptable</li>
+                        <li>Speed variations are normal - no need to control precisely</li>
+                        <li>If verification fails, click the "Re-verify" button</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="security-info">
+                <div class="security-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Intelligent Behavior Analysis</span>
+                </div>
+                <div class="security-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Advanced Security Algorithms</span>
+                </div>
+                <div class="security-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Secure Connection</span>
+                </div>
+            </div>
+            
+            <div class="robot-detected" id="robotDetected">
+                <i class="fas fa-robot"></i>
+                <h3>Verification Failed</h3>
+                <p>Our system detected that your actions don't match human behavior patterns. Please try:</p>
+                <ul style="text-align: left; margin: 15px 0; padding-left: 30px; color: #94a3b8;">
+                    <li>Drag the slider at a natural speed</li>
+                    <li>Include brief pauses during operation</li>
+                    <li>Try different dragging speeds</li>
+                </ul>
+                <button class="btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> Re-verify
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© ZF Hub Security Verification | Protecting Your Access</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const sliderHandle = document.getElementById('sliderHandle');
+            const sliderProgress = document.getElementById('sliderProgress');
+            const statusMessage = document.getElementById('statusMessage');
+            const redirectBtn = document.getElementById('redirectBtn');
+            const robotDetected = document.getElementById('robotDetected');
+            const resetBtn = document.getElementById('resetBtn');
+            const loadingBar = document.getElementById('loadingBar');
+            
+            // Verification variables
+            let isDragging = false;
+            let startX, startTime;
+            let positions = [];
+            let verificationPassed = false;
+            let attemptCount = 0; // Attempt counter
+            
+            // Max slider movement distance
+            const sliderContainer = sliderHandle.parentElement.parentElement;
+            const maxSlideDistance = sliderContainer.offsetWidth - sliderHandle.offsetWidth;
+            
+            // Mouse/touch event listeners
+            sliderHandle.addEventListener('mousedown', startDrag);
+            sliderHandle.addEventListener('touchstart', startDrag, { passive: false });
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+            
+            // Reset button event
+            resetBtn.addEventListener('click', resetVerification);
+            
+            // Start dragging
+            function startDrag(e) {
+                if (verificationPassed) return;
+                
+                e.preventDefault();
+                isDragging = true;
+                
+                // Record start position and time
+                startX = e.clientX || e.touches[0].clientX;
+                startTime = new Date().getTime();
+                
+                // Reset data
+                positions = [];
+                
+                // Update status
+                statusMessage.textContent = "Continue dragging the slider...";
+                statusMessage.className = "status-message";
+                
+                // Add active style
+                sliderHandle.style.background = "#3a5af5";
+                
+                // Record initial position
+                recordPosition(0, startTime);
+            }
+            
+            // Dragging
+            function drag(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                const clientX = e.clientX || (e.touches[0] ? e.touches[0].clientX : 0);
+                
+                // Calculate movement distance
+                let moveX = clientX - startX;
+                moveX = Math.max(0, Math.min(moveX, maxSlideDistance));
+                
+                // Update slider position
+                sliderHandle.style.transform = `translateX(${moveX}px)`;
+                sliderProgress.style.width = `${moveX}px`;
+                
+                // Record position and time
+                recordPosition(moveX, new Date().getTime());
+                
+                // If dragged to the far right
+                if (moveX >= maxSlideDistance - 2) {
+                    endDrag(e);
+                }
+            }
+            
+            // End dragging
+            function endDrag(e) {
+                if (!isDragging) return;
+                
+                isDragging = false;
+                const endTime = new Date().getTime();
+                const totalTime = endTime - startTime;
+                
+                // Get final position
+                const finalPosition = positions[positions.length - 1];
+                const finalX = finalPosition ? finalPosition.x : 0;
+                
+                // Remove active style
+                sliderHandle.style.background = "var(--primary-color)";
+                
+                // If not fully dragged
+                if (finalX < maxSlideDistance - 5) {
+                    statusMessage.textContent = "Drag the slider to the far right to complete verification";
+                    resetSlider();
+                    return;
+                }
+                
+                // Increase attempt count
+                attemptCount++;
+                
+                // Analyze drag behavior - more lenient now
+                const isHuman = analyzeDragBehavior(positions, totalTime, attemptCount);
+                
+                // Process based on analysis
+                if (isHuman) {
+                    // Human behavior
+                    statusMessage.textContent = "Verification successful! Redirecting...";
+                    statusMessage.className = "status-message success";
+                    verificationPassed = true;
+                    
+                    // Update button status
+                    redirectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verification Passed';
+                    redirectBtn.disabled = false;
+                    
+                    // Show loading bar
+                    animateLoadingBar();
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = "https://zhoufuz.github.io/ZF-hub/ScriptGet2.0.Html";
+                    }, 2000);
+                } else {
+                    // Robot behavior
+                    if (attemptCount > 3) {
+                        statusMessage.textContent = "Verification failed: Too many attempts";
+                        statusMessage.className = "status-message error";
+                    } else {
+                        statusMessage.textContent = "Verification failed, please try again";
+                        statusMessage.className = "status-message warning";
+                    }
+                    
+                    // Show robot detection interface
+                    setTimeout(() => {
+                        robotDetected.classList.add('show');
+                    }, 500);
+                }
+            }
+            
+            // Record position and time
+            function recordPosition(x, time) {
+                positions.push({ x, time });
+            }
+            
+            // Analyze drag behavior (more lenient version)
+            function analyzeDragBehavior(positions, totalTime, attemptCount) {
+                // 1. Check if completed instantly (too short time)
+                if (totalTime < 300) {
+                    return false; // Robot behavior
+                }
+                
+                // 2. Check if took too long (might be abandoned)
+                if (totalTime > 10000) {
+                    return false;
+                }
+                
+                // 3. Check if enough movement points
+                if (positions.length < 8) {
+                    return false; // Robot behavior (too few points)
+                }
+                
+                // 4. Calculate speed variations
+                const speeds = [];
+                for (let i = 1; i < positions.length; i++) {
+                    const distance = positions[i].x - positions[i-1].x;
+                    const timeDiff = positions[i].time - positions[i-1].time;
+                    
+                    if (timeDiff > 0) {
+                        speeds.push(distance / timeDiff);
+                    }
+                }
+                
+                // 5. Calculate speed standard deviation (detect speed changes)
+                const avgSpeed = speeds.reduce((sum, speed) => sum + speed, 0) / speeds.length;
+                const speedVariance = speeds.reduce((sum, speed) => sum + Math.pow(speed - avgSpeed, 2), 0) / speeds.length;
+                const speedStdDev = Math.sqrt(speedVariance);
+                
+                // 6. More lenient standard: Pass if not perfectly uniform
+                if (speedStdDev < 0.005) {
+                    return false; // Robot behavior (too uniform speed)
+                }
+                
+                // 7. Relax standards after multiple attempts
+                if (attemptCount > 1) {
+                    statusMessage.textContent = "Relaxing verification standards...";
+                    return true;
+                }
+                
+                // Passed all checks, considered human
+                return true;
+            }
+            
+            // Reset slider
+            function resetSlider() {
+                setTimeout(() => {
+                    sliderHandle.style.transform = "translateX(0px)";
+                    sliderProgress.style.width = "0px";
+                }, 300);
+            }
+            
+            // Reset entire verification
+            function resetVerification() {
+                robotDetected.classList.remove('show');
+                resetSlider();
+                statusMessage.textContent = "Please drag the slider again";
+                statusMessage.className = "status-message";
+                redirectBtn.innerHTML = '<i class="fas fa-lock"></i> Awaiting Verification...';
+                redirectBtn.disabled = true;
+                loadingBar.style.width = "0";
+            }
+            
+            // Animate loading bar
+            function animateLoadingBar() {
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                    } else {
+                        width++;
+                        loadingBar.style.width = `${width}%`;
+                    }
+                }, 20);
+            }
+        });
+    </script>
+</body>
+</html>
