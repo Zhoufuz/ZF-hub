@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZF Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --dark-bg: #1e293b;
+            --darker-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --border-color: #cbd5e1;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4a6cf7, #8a63d2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(to right, #4a6cf7, #8a63d2);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 25px auto 0;
+            line-height: 1.6;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .btn {
+            padding: 18px 30px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), #8a63d2);
+            z-index: -1;
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .btn:hover::before {
+            transform: translateX(0);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1.4rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+
+        .feature-card p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: var(--success-color);
+            color: white;
+            box-shadow: var(--shadow);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--darker-bg);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+            color: var(--text-light);
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .copy-btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            background: var(--success-color);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 3rem;
+            }
+            
+            .btn {
+                padding: 16px 25px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ZF Hub</h1>
+            <p class="subtitle">ZF Hub - Beautiful UI, Powerful Features</p>
+        </header>
+        
+        <div class="buttons-container">
+            <button id="enBtn" class="btn btn-primary pulse">
+                <i class="fas fa-globe"></i> Get EN Language
+            </button>
+            <button id="cnBtn" class="btn btn-secondary pulse">
+                <i class="fas fa-globe-asia"></i> Get CN Language
+            </button>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Secure and Reliable</h3>
+                <p>All scripts are tested to ensure safety and stability</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>High Performance</h3>
+                <p>Optimized script performance for smooth operation</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-sync-alt"></i>
+                <h3>Regular Updates</h3>
+                <p>Continuous updates to adapt to Roblox changes</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© ZF Hub | Script Hub</p>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Code copied to clipboard!</span>
+    </div>
+    
+    <!-- EN Modal -->
+    <div class="modal" id="enModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeEnModal">&times;</button>
+            <div class="modal-header">
+                <h2>EN Language Script</h2>
+                <p>Copy the code below and use it in your Executor</p>
+            </div>
+            <div class="modal-body">
+                <div class="code-block">
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/Zhoufuz/E5A4620487562/refs/heads/main/E5A462087562.Lua"))()
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="copy-btn" id="copyEnBtn">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CN Modal -->
+    <div class="modal" id="cnModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeCnModal">&times;</button>
+            <div class="modal-header">
+                <h2>CN Language Script</h2>
+                <p>复制在你的注入器中使用</p>
+            </div>
+            <div class="modal-body">
+                <div class="code-block">
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/Zhoufuz/5A4620487562/refs/heads/main/5A4620487562.Lua"))()
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="copy-btn" id="copyCnBtn">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const enBtn = document.getElementById('enBtn');
+            const cnBtn = document.getElementById('cnBtn');
+            const enModal = document.getElementById('enModal');
+            const cnModal = document.getElementById('cnModal');
+            const closeEnModal = document.getElementById('closeEnModal');
+            const closeCnModal = document.getElementById('closeCnModal');
+            const copyEnBtn = document.getElementById('copyEnBtn');
+            const copyCnBtn = document.getElementById('copyCnBtn');
+            const notification = document.getElementById('notification');
+            
+            // EN button click event
+            enBtn.addEventListener('click', () => {
+                enModal.classList.add('show');
+            });
+            
+            // CN button click event
+            cnBtn.addEventListener('click', () => {
+                cnModal.classList.add('show');
+            });
+            
+            // Close EN modal
+            closeEnModal.addEventListener('click', () => {
+                enModal.classList.remove('show');
+            });
+            
+            // Close CN modal
+            closeCnModal.addEventListener('click', () => {
+                cnModal.classList.remove('show');
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === enModal) {
+                    enModal.classList.remove('show');
+                }
+                if (e.target === cnModal) {
+                    cnModal.classList.remove('show');
+                }
+            });
+            
+            // Copy EN code
+            copyEnBtn.addEventListener('click', () => {
+                const code = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zhoufuz/E5A4620487562/refs/heads/main/E5A462087562.Lua"))()';
+                copyToClipboard(code);
+            });
+            
+            // Copy CN code
+            copyCnBtn.addEventListener('click', () => {
+                const code = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zhoufuz/5A4620487562/refs/heads/main/5A4620487562.Lua"))()';
+                copyToClipboard(code);
+            });
+            
+            // Copy to clipboard function
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                // Show notification
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    
+                    // Close modals
+                    setTimeout(() => {
+                        enModal.classList.remove('show');
+                        cnModal.classList.remove('show');
+                    }, 300);
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
